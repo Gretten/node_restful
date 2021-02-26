@@ -4,41 +4,18 @@ const { connect } = require('./routes/posts');
 const app = express();
 const bodyParser = require('body-parser')
 const cors = require('cors');
-const urlencodedParser = bodyParser.urlencoded({extended: false});
 const multer  = require("multer");
 require('dotenv/config')
 
 app.use(bodyParser.json());
 app.use(cors());
 
-const storage = multer.diskStorage({
-    destination: './uploads',
-    filename: (req, file, cb) => {
-        cb(null, file.fieldname + - Date.now() + file.originalname)
-    }
-})
-
-const upload = multer({
-    storage,
-}).single('image')
-
 // import routes
 const postsRoute = require('./routes/posts');
 const formRoute = require('./routes/form');
-const { path } = require('dotenv/lib/env-options');
 
 app.use('/posts', postsRoute);
-app.use('/form', formRoute);
-app.post("/send", urlencodedParser, (req, res)=> {
-    upload(req, res, (err) => {
-        if(err) {
-            res.render('err')
-        } else {
-            console.log(req.file)
-        }
-    })
-})
-            
+app.use('/form', formRoute);        
 
 app.get('/', 
     (req, res) => {
